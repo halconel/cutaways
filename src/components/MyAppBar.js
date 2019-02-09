@@ -3,6 +3,12 @@ import { Appbar } from 'react-native-paper';
 
 export default class MyAppBar extends Component {
   
+  constructor(props) {
+    super(props);
+  
+    this.state = {};
+  }
+
   _goBack = () => console.log('Went back');
   _onSearch = () => console.log('Searching');
   _onMore = () => console.log('Shown more');
@@ -14,8 +20,7 @@ export default class MyAppBar extends Component {
           onPress={this._goBack}
         />
         <Appbar.Content
-          title="Title"
-          subtitle="Subtitle"
+          title="Список маяков"
         />
         <Appbar.Action icon="search" onPress={this._onSearch} />
         <Appbar.Action icon="more-vert" onPress={this._onMore} />
