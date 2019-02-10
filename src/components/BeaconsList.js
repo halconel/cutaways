@@ -3,13 +3,21 @@ import { Title, Paragraph, Card, Button, Surface } from "react-native-paper";
 import { StyleSheet, Text, ScrollView, View, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const battaryFull = <Icon name="battery-full" size={24} color="green" />;
-const battaryThreeQuarters = <Icon name="battery-three-quarters" size={24} />;
-const battaryHalf = <Icon name="battery-half" size={24} />;
-const battaryQuarter = <Icon name="battery-quarter" size={24} color="red" />;
-const battaryEmpty = <Icon name="battery-empty" size={24} color="red" />;
+//const battaryFull = <Icon name="battery-full" size={24} color="green" />;
+//const battaryThreeQuarters = (
+//  <Icon name="battery-three-quarters" size={24} color="green" />
+//);
+//const battaryHalf = <Icon name="battery-half" size={24} color="orange" />;
+//const battaryQuarter = <Icon name="battery-quarter" size={24} color="red" />;
+//const battaryEmpty = <Icon name="battery-empty" size={24} color="red" />;
 
-export default class BeaconList extends Component {
+export default class BeaconsList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   render() {
     return (
       <ScrollView
@@ -20,7 +28,7 @@ export default class BeaconList extends Component {
           <Card.Content style={styles.description}>
             <View style={styles.text}>
               <View style={styles.status}>
-                {battaryFull}
+                {/* {battaryFull} */}
                 <Paragraph style={styles.date}>10.02.2019</Paragraph>
               </View>
 
@@ -45,7 +53,7 @@ export default class BeaconList extends Component {
           <Card.Content style={styles.description}>
             <View style={styles.text}>
               <View style={styles.status}>
-                {battaryQuarter}
+                {/* {battaryQuarter} */}
                 <Paragraph style={styles.date}>02.02.2019</Paragraph>
               </View>
 

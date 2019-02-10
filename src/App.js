@@ -19,8 +19,9 @@ import {
   View,
   Image
 } from "react-native";
-import MyAppBar from "./components/MyAppBar";
 import Icon from "react-native-vector-icons/FontAwesome";
+
+import MyAppBar from "./components/MyAppBar";
 
 const battaryFull = <Icon name="battery-full" size={24} color="green" />;
 const battaryThreeQuarters = <Icon name="battery-three-quarters" size={24} />;
@@ -37,8 +38,62 @@ const theme = {
   }
 };
 
-const ListRoute = () => <Text />;
-const SettingsRoute = () => <Text />;
+const ListRoute = () => (
+  <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <Card style={styles.card}>
+      <Card.Content style={styles.description}>
+        <View style={styles.text}>
+          <View style={styles.status}>
+            {battaryFull}
+            <Paragraph style={styles.date}>10.02.2019</Paragraph>
+          </View>
+
+          <Title>Моя основная система</Title>
+          <Paragraph>Номер: +7 (916) 132-12-14</Paragraph>
+          <Paragraph>N: 5554.2500 E: 03723.1608</Paragraph>
+        </View>
+        <Image
+          source={require("../assets/pasport1.jpg")}
+          style={styles.image}
+        />
+      </Card.Content>
+
+      <Card.Actions>
+        <Button>Поиск</Button>
+        <Button>Статус</Button>
+        <Button>Редактировать</Button>
+      </Card.Actions>
+    </Card>
+
+    <Card style={styles.card}>
+      <Card.Content style={styles.description}>
+        <View style={styles.text}>
+          <View style={styles.status}>
+            {battaryQuarter}
+            <Paragraph style={styles.date}>02.02.2019</Paragraph>
+          </View>
+
+          <Title>Студенческая система</Title>
+          <Paragraph>Номер: +7 (916) 421-99-01</Paragraph>
+          <Paragraph>N: 5553.9613 E: 03143.1127</Paragraph>
+        </View>
+        <Image
+          source={require("../assets/pasport2.jpg")}
+          style={styles.image}
+        />
+      </Card.Content>
+
+      <Card.Actions>
+        <Button>Поиск</Button>
+        <Button>Статус</Button>
+        <Button>Редактировать</Button>
+      </Card.Actions>
+      <Surface style={styles.surface}>
+        <Text style={{ color: "white" }}>2</Text>
+      </Surface>
+    </Card>
+  </ScrollView>
+);
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -54,7 +109,7 @@ export default class App extends Component<Props> {
 
   _renderScene = BottomNavigation.SceneMap({
     list: ListRoute,
-    settings: SettingsRoute
+    settings: ListRoute
   });
 
   render() {
@@ -62,63 +117,6 @@ export default class App extends Component<Props> {
       <PaperProvider theme={theme}>
         <MyAppBar />
 
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.content}
-        >
-          <Card style={styles.card}>
-            <Card.Content style={styles.description}>
-              <View style={styles.text}>
-                <View style={styles.status}>
-                  {battaryFull}
-                  <Paragraph style={styles.date}>10.02.2019</Paragraph>
-                </View>
-
-                <Title>Моя основная система</Title>
-                <Paragraph>Номер: +7 (916) 132-12-14</Paragraph>
-                <Paragraph>N: 5554.2500 E: 03723.1608</Paragraph>
-              </View>
-              <Image
-                source={require("../assets/pasport1.jpg")}
-                style={styles.image}
-              />
-            </Card.Content>
-
-            <Card.Actions>
-              <Button>Поиск</Button>
-              <Button>Статус</Button>
-              <Button>Редактировать</Button>
-            </Card.Actions>
-          </Card>
-
-          <Card style={styles.card}>
-            <Card.Content style={styles.description}>
-              <View style={styles.text}>
-                <View style={styles.status}>
-                  {battaryQuarter}
-                  <Paragraph style={styles.date}>02.02.2019</Paragraph>
-                </View>
-
-                <Title>Студенческая система</Title>
-                <Paragraph>Номер: +7 (916) 421-99-01</Paragraph>
-                <Paragraph>N: 5553.9613 E: 03143.1127</Paragraph>
-              </View>
-              <Image
-                source={require("../assets/pasport2.jpg")}
-                style={styles.image}
-              />
-            </Card.Content>
-
-            <Card.Actions>
-              <Button>Поиск</Button>
-              <Button>Статус</Button>
-              <Button>Редактировать</Button>
-            </Card.Actions>
-            <Surface style={styles.surface}>
-              <Text style={{ color: "white" }}>2</Text>
-            </Surface>
-          </Card>
-        </ScrollView>
         <BottomNavigation
           navigationState={this.state}
           onIndexChange={this._handleIndexChange}
