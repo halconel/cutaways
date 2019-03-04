@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View} from 'react-native';
+import { FAB } from 'react-native-paper';
 import BeaconCard from './BeaconCard';
 
 const fistBeacon = (
@@ -9,7 +10,7 @@ const fistBeacon = (
     pos="N: 5554.2500 E: 03723.1608"
     lastUpd="10.02.2019"
     voltage={4.25}
-    messagesCount={0}
+    messagesCount={10}
   />
 );
 
@@ -40,15 +41,31 @@ export default class BeaconsList extends Component {
     super(props);
 
     this.state = {
-      beacons: [fistBeacon, secondBeacon, thirdBeacon],
+      beacons: [],
     };
   }
 
+  _addBeacon() {
+    const {beacons} = this.state;
+    this.setState({
+      beacons: [...beacons, fistBeacon]
+    })
+  }
+
   render() {
+    const {beacons} = this.state;
+
     return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {this.state.beacons}
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+          {beacons}
+        </ScrollView>
+        {beacons.length === 0 && <FAB
+          style={styles.fab}
+          icon="add"
+          onPress={() => this._addBeacon()}
+        />}
+      </View>
     );
   }
 }
@@ -56,5 +73,11 @@ export default class BeaconsList extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 16,
+    bottom: 16,
   },
 });
