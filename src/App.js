@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { DefaultTheme, Provider as PaperProvider, BottomNavigation } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { createStackNavigator, createAppContainer } from "react-navigation";
 
-import MyAppBar from './components/MyAppBar';
-import BeaconList from './components/BeaconsList';
+import BeaconsScreen from './components/BeaconsScreen';
+import EditScreen from './components/EditScreen';
 
 const theme = {
   ...DefaultTheme,
@@ -13,35 +14,60 @@ const theme = {
   },
 };
 
-const ListRoute = () => <BeaconList />;
+const BeaconsContext = React.createContext()
 
-type Props = {};
-export default class App extends Component<Props> {
+const AppNavigator = createStackNavigator({
+  Home: BeaconsScreen,
+  EditScreen: EditScreen,
+},
+{
+  initialRouteName: 'Home',
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: theme.colors.primary,
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
+});
+
+const AppContainer = createAppContainer(AppNavigator)
+
+export default class App extends Component {
+
   state = {
-    index: 0,
-    routes: [
-      { key: 'list', title: 'Список маяков', icon: 'list' },
-      { key: 'settings', title: 'Настройки', icon: 'settings' },
-    ],
+    beacons: []
   };
 
-  _handleIndexChange = index => this.setState({ index });
-
-  _renderScene = BottomNavigation.SceneMap({
-    list: ListRoute,
-    settings: ListRoute,
-  });
+  uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  
+  addBeacon = (props) => {
+    const { beacons } = this.state;
+    this.setState({
+      beacon: [...beacons, {
+        key: uuidv4,
+        title: props.title,
+        phone: props.phone,
+      }]
+    })
+  }
 
   render() {
+    const { beacons } = this.state;
+
     return (
       <PaperProvider theme={theme}>
-        <MyAppBar />
-        <BottomNavigation
-          navigationState={this.state}
-          onIndexChange={this._handleIndexChange}
-          renderScene={this._renderScene}
-        />
+        <BeaconsContext.Provider beacons = {beacons} addBeacon = {this.addBeacon}>
+          <AppContainer />
+        </BeaconsContext.Provider>  
       </PaperProvider>
-    );
+    )
   }
 }

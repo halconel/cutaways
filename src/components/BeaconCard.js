@@ -25,7 +25,7 @@ function voltageToPercent(voltage) {
   return 0.0;
 }
 
-class BeaconCard extends Component {
+export default class BeaconCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -112,5 +112,3 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 });
-
-export default BeaconCard;
