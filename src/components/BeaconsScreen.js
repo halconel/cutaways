@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View} from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { FAB } from 'react-native-paper';
 import BeaconCard from './BeaconCard';
+import { withGlobalContext } from './GlobalContext';
 
 const fistBeacon = (
   <BeaconCard
@@ -36,41 +37,27 @@ const thirdBeacon = (
   />
 );
 
-export default class BeaconsList extends Component {
-  
+class BeaconsScreen extends Component {
   static navigationOptions = {
     title: 'Список маяков',
   };
-  
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      beacons: [],
-    };
-  }
 
   openEditScreen() {
-    const {addBeacon} = this.props;
-
-    this.props.navigation.navigate('EditScreen', {
-      callBack: addBeacon, 
-    })
+    const { navigation } = this.props;
+    navigation.navigate('EditScreen');
   }
 
   render() {
-    const {beacons} = this.state;
+    const { beacons } = this.props.global;
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
           {beacons}
         </ScrollView>
-        {beacons.length === 0 && <FAB
-          style={styles.fab}
-          icon="add"
-          onPress={() => this.openEditScreen()}
-        />}
+        {beacons.length === 0 && (
+          <FAB style={styles.fab} icon="add" onPress={() => this.openEditScreen()} />
+        )}
       </View>
     );
   }
@@ -87,3 +74,5 @@ const styles = StyleSheet.create({
     bottom: 16,
   },
 });
+
+export default withGlobalContext(BeaconsScreen);
