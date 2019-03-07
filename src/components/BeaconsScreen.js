@@ -47,13 +47,29 @@ class BeaconsScreen extends Component {
     navigation.navigate('EditScreen');
   }
 
+  makeCards = (beacons) => {
+    const a = beacons.map(beacon => {
+      return (
+        <BeaconCard
+          key={beacon.key}
+          title={beacon.title}
+          phone={beacon.phone}
+          pos={beacon.pos}
+          lastUpd={beacon.lastUpd}
+          voltage={beacon.voltage}
+          messagesCount={beacon.messagesCount}
+        />)
+    });
+    return a
+  }
+
   render() {
     const { beacons } = this.props.global;
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          {beacons}
+          {this.makeCards(beacons)}
         </ScrollView>
         {beacons.length === 0 && (
           <FAB style={styles.fab} icon="add" onPress={() => this.openEditScreen()} />

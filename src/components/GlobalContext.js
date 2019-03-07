@@ -20,10 +20,10 @@ export class GlobalContextProvider extends React.Component {
   addBeacon = (props) => {
     const { beacons } = this.state;
     this.setState({
-      beacon: [
+      beacons: [
         ...beacons,
         {
-          key: uuidv4,
+          key: uuidv4(),
           title: props.title,
           phone: props.phone,
         },
@@ -31,9 +31,9 @@ export class GlobalContextProvider extends React.Component {
     });
   };
 
-  updateBeacon = (id, props) => {};
+  updateBeacon = (id, props) => { };
 
-  deleteBeacon = (id) => {};
+  deleteBeacon = (id) => { };
 
   render() {
     return (

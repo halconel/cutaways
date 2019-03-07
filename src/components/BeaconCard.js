@@ -25,51 +25,37 @@ function voltageToPercent(voltage) {
   return 0.0;
 }
 
-export default class BeaconCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: props.title,
-      phone: props.phone,
-      pos: props.pos,
-      lastUpd: props.lastUpd,
-      voltage: props.voltage,
-      photo: props.photo,
-      messagesCount: props.messagesCount,
-    };
-  }
-
-  render() {
-    return (
-      <Card style={styles.card}>
-        <Card.Content style={styles.description}>
-          <View style={styles.text}>
-            <View style={styles.status}>
-              {getBattaryIcon(voltageToPercent(this.state.voltage))}
-              <Paragraph style={styles.date}>{this.state.lastUpd}</Paragraph>
-            </View>
-
-            <Title>{this.state.title}</Title>
-            <Paragraph>{this.state.phone}</Paragraph>
-            <Paragraph>{this.state.pos}</Paragraph>
+export default BeaconCard = (props) => {
+  return (
+    <Card style={styles.card}>
+      <Card.Content style={styles.description}>
+        <View style={styles.text}>
+          <View style={styles.status}>
+            {getBattaryIcon(voltageToPercent(props.voltage))}
+            <Paragraph style={styles.date}>{props.lastUpd}</Paragraph>
           </View>
-          <Image source={require('../../assets/pasport1.jpg')} style={styles.image} />
-        </Card.Content>
 
-        <Card.Actions>
-          <Button>Поиск</Button>
-          <Button>Статус</Button>
-          <Button>Редактировать</Button>
-        </Card.Actions>
-        {this.state.messagesCount > 0 && (
-          <Surface style={styles.surface}>
-            <Text style={{ color: 'white' }}>{this.state.messagesCount}</Text>
-          </Surface>
-        )}
-      </Card>
-    );
-  }
+          <Title>{props.title}</Title>
+          <Paragraph>{props.phone}</Paragraph>
+          <Paragraph>{props.pos}</Paragraph>
+        </View>
+        <Image source={require('../../assets/pasport1.jpg')} style={styles.image} />
+      </Card.Content>
+
+      <Card.Actions>
+        <Button>Поиск</Button>
+        <Button>Статус</Button>
+        <Button>Редактировать</Button>
+      </Card.Actions>
+      {props.messagesCount > 0 && (
+        <Surface style={styles.surface}>
+          <Text style={{ color: 'white' }}>{props.messagesCount}</Text>
+        </Surface>
+      )}
+    </Card>
+  );
 }
+
 
 const styles = StyleSheet.create({
   surface: {
