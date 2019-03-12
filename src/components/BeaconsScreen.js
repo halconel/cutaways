@@ -54,34 +54,44 @@ const styles = StyleSheet.create({
 });
 
 function BeaconsScreen(props) {
-  const { beacons } = props.global;
+  const {
+    global: { beacons },
+  } = props;
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {beacons.map(beacon => <BeaconCard {...beacon} />)}
+        {beacons.map(beacon => (
+          <BeaconCard {...beacon} />
+        ))}
       </ScrollView>
     </View>
   );
 }
 
 function TabButtons({ navigation }) {
-  const passData = { title: 'Добавление маяка' }
+  const passData = { titleNavBar: 'Добавление маяка' };
 
   return (
     <View style={styles.tab}>
-      <IconButton color='#fff' icon='add' onPress={() => navigation.navigate('EditScreen', passData)} />
-      <IconButton color='#fff' icon='settings' onPress={() => navigation.navigate('SettingsScreen')} />
+      <IconButton
+        color="#fff"
+        icon="add"
+        onPress={() => navigation.navigate('EditScreen', passData)}
+      />
+      <IconButton
+        color="#fff"
+        icon="settings"
+        onPress={() => navigation.navigate('SettingsScreen')}
+      />
     </View>
   );
 }
 
 const withGlobal_BeaconScreen = withGlobalContext(BeaconsScreen);
-withGlobal_BeaconScreen.navigationOptions = ({ navigation }) => {
-  return {
-    title: 'Список маяков',
-    headerRight: <TabButtons navigation={navigation} />
-  }
-}
+withGlobal_BeaconScreen.navigationOptions = ({ navigation }) => ({
+  title: 'Список маяков',
+  headerRight: <TabButtons navigation={navigation} />,
+});
 
 export default withGlobal_BeaconScreen;

@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TextInput, Button, Text, IconButton } from 'react-native-paper';
-import { withGlobalContext } from './GlobalContext';
+import {
+  TextInput, Button, Text, IconButton,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { withGlobalContext } from './GlobalContext';
 
 const styles = StyleSheet.create({
   formContainer: {
@@ -33,8 +35,8 @@ const styles = StyleSheet.create({
     flex: 0,
     alignSelf: 'center',
     marginTop: 16,
-  }
-})
+  },
+});
 
 function AppInput({ icon, helper, ...textProps }) {
   return (
@@ -49,78 +51,105 @@ function AppInput({ icon, helper, ...textProps }) {
         {helper && <Text style={styles.helper}>{helper}</Text>}
       </View>
     </View>
-  )
+  );
 }
 
 function Form(props) {
   const {
-    title,
-    phone,
-    onChangeName,
-    onChangePhone,
-    onSubmit
-  } = props
+    title, phone, onChangeName, onChangePhone, onSubmit,
+  } = props;
 
-  const titleHelper = "Введите наименование маяка для отображения в списке.";
-  const phoneHelper = "Введите номер телефона в междунароном формате. Например, +7 911 123-12-13";
+  const titleHelper = 'Введите наименование маяка для отображения в списке.';
+  const phoneHelper = 'Введите номер телефона в междунароном формате. Например, +7 911 123-12-13';
 
   return (
     <View style={styles.formContainer}>
-      <AppInput icon='tag' label='Имя' value={title} helper={titleHelper} onChangeText={onChangeName} />
-      <AppInput icon='phone' label='Номер телефона' keyboardType='phone-pad' value={phone} helper={phoneHelper} onChangeText={onChangePhone} />
-      <Button style={styles.button} icon="check" mode="contained" onPress={onSubmit}>
-        Сохранить
-      </Button>
+      <AppInput
+        icon="tag"
+        label="Имя"
+        value={title}
+        helper={titleHelper}
+        onChangeText={onChangeName}
+      />
+      <AppInput
+        icon="phone"
+        label="Номер телефона"
+        keyboardType="phone-pad"
+        value={phone}
+        helper={phoneHelper}
+        onChangeText={onChangePhone}
+      />
     </View>
-  )
+  );
 }
 
 class EditScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     const {
       title = '',
       phone = '',
       navigation,
-      global: { addBeacon }
-    } = props
+      global: { addBeacon },
+    } = props;
 
-    this.state = { title, phone }
-    this.navigation = navigation
-    this.addBeacon = addBeacon
+    this.state = { title, phone };
+    this.navigation = navigation;
+    this.addBeacon = addBeacon;
   }
 
-  onChangeName = title => this.setState({ title })
-  onChangePhone = phone => this.setState({ phone })
-  onSubmit = () => {
-    const { title, phone } = this.state
+  onChangeName = (title) => {
+    this.setState({ title });
+    this.navigation.setParams({ title });
+  };
 
-    this.addBeacon({ title, phone })
-    this.navigation.goBack()
-  }
+  onChangePhone = (phone) => {
+    this.setState({ phone });
+    this.navigation.setParams({ phone });
+  };
 
   render() {
-    const { title, phone } = this.state
+    const { title, phone } = this.state;
 
-    return <Form title={title} phone={phone} onChangeName={this.onChangeName} onChangePhone={this.onChangePhone} onSubmit={this.onSubmit} />
+    return (
+      <Form
+        title={title}
+        phone={phone}
+        onChangeName={this.onChangeName}
+        onChangePhone={this.onChangePhone}
+        onSubmit={this.onSubmit}
+      />
+    );
   }
 }
 
-function TabButtons({ navigation, screenProps }) {
+const onSubmit = (navigation, addBeacon, title, phone) => {
+  addBeacon({ title, phone });
+  navigation.goBack();
+};
+
+function TabButtons({ navigation, global: { addBeacon } }) {
+  const title = navigation.getParam('title', 'Имя не задано');
+  const phone = navigation.getParam('phone', '');
+
   return (
     <View style={styles.tab}>
-      <IconButton color='#fff' icon='check' onPress={() => onSubmit()} />
+      <IconButton
+        color="#fff"
+        icon="check"
+        onPress={() => onSubmit(navigation, addBeacon, title, phone)}
+      />
     </View>
   );
 }
 
-const withGlobal_EditScreen = withGlobalContext(EditScreen);
-withGlobal_EditScreen.navigationOptions = ({ navigation, screenProps }) => {
-  return {
-    title: navigation.getParam('title', 'Редактирование маяка'),
-    headerRight: <TabButtons navigation={navigation} screenProps={screenProps} />
-  }
-}
+const withGlobalEditScreen = withGlobalContext(EditScreen);
+const WithGlobalTabButton = withGlobalContext(TabButtons);
 
-export default withGlobal_EditScreen;
+withGlobalEditScreen.navigationOptions = ({ navigation }) => ({
+  title: navigation.getParam('titleNavBar', 'Редактирование маяка'),
+  headerRight: <WithGlobalTabButton navigation={navigation} />,
+});
+
+export default withGlobalEditScreen;

@@ -39,7 +39,7 @@ export default BeaconCard = (props) => {
           <Paragraph>{props.phone}</Paragraph>
           <Paragraph>{props.pos}</Paragraph>
         </View>
-        <Image source={require('../../assets/pasport1.jpg')} style={styles.image} />
+        <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
       </Card.Content>
 
       <Card.Actions>
