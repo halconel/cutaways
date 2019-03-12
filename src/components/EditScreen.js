@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { TextInput, Button, Text, IconButton } from 'react-native-paper';
 import { withGlobalContext } from './GlobalContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -107,4 +107,20 @@ class EditScreen extends Component {
   }
 }
 
-export default withGlobalContext(EditScreen);
+function TabButtons({ navigation, screenProps }) {
+  return (
+    <View style={styles.tab}>
+      <IconButton color='#fff' icon='check' onPress={() => onSubmit()} />
+    </View>
+  );
+}
+
+const withGlobal_EditScreen = withGlobalContext(EditScreen);
+withGlobal_EditScreen.navigationOptions = ({ navigation, screenProps }) => {
+  return {
+    title: navigation.getParam('title', 'Редактирование маяка'),
+    headerRight: <TabButtons navigation={navigation} screenProps={screenProps} />
+  }
+}
+
+export default withGlobal_EditScreen;
