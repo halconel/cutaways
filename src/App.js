@@ -18,7 +18,7 @@ const theme = {
 const AppNavigator = createStackNavigator(
   {
     Home: BeaconsScreen,
-    EditScreen,
+    EditScreen: EditScreen,
   },
   {
     initialRouteName: 'Home',
@@ -36,18 +36,12 @@ const AppNavigator = createStackNavigator(
 
 const AppContainer = createAppContainer(AppNavigator);
 
-export default class App extends Component {
-  state = {
-    beacons: [],
-  };
-
-  render() {
-    return (
-      <PaperProvider theme={theme}>
-        <GlobalContextProvider>
-          <AppContainer />
-        </GlobalContextProvider>
-      </PaperProvider>
-    );
-  }
+export default function App() {
+  return (
+    <PaperProvider theme={theme}>
+      <GlobalContextProvider>
+        <AppContainer />
+      </GlobalContextProvider>
+    </PaperProvider>
+  )
 }

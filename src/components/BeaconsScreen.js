@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { FAB, IconButton } from 'react-native-paper';
 import BeaconCard from './BeaconCard';
 import { withGlobalContext } from './GlobalContext';
 
@@ -37,46 +37,16 @@ const thirdBeacon = (
   />
 );
 
-class BeaconsScreen extends Component {
-  static navigationOptions = {
-    title: 'Список маяков',
-  };
+function BeaconsScreen(props) {
+  const { beacons } = props.global;
 
-  openEditScreen() {
-    const { navigation } = this.props;
-    navigation.navigate('EditScreen');
-  }
-
-  makeCards = (beacons) => {
-    const a = beacons.map(beacon => {
-      return (
-        <BeaconCard
-          key={beacon.key}
-          title={beacon.title}
-          phone={beacon.phone}
-          pos={beacon.pos}
-          lastUpd={beacon.lastUpd}
-          voltage={beacon.voltage}
-          messagesCount={beacon.messagesCount}
-        />)
-    });
-    return a
-  }
-
-  render() {
-    const { beacons } = this.props.global;
-
-    return (
-      <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          {this.makeCards(beacons)}
-        </ScrollView>
-        {beacons.length === 0 && (
-          <FAB style={styles.fab} icon="add" onPress={() => this.openEditScreen()} />
-        )}
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        {beacons.map(beacon => <BeaconCard {...beacon} />)}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -89,6 +59,27 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 16,
   },
+  tab: {
+    flex: 1,
+    flexDirection: 'row',
+  },
 });
 
-export default withGlobalContext(BeaconsScreen);
+function TabButtons({ navigation }) {
+  return (
+    <View style={styles.tab}>
+      <IconButton color='#fff' icon='add' onPress={() => navigation.navigate('EditScreen')} />
+      <IconButton color='#fff' icon='settings' onPress={() => navigation.navigate('SettingsScreen')} />
+    </View>
+  );
+}
+
+const withGlobal_BeaconScreen = withGlobalContext(BeaconsScreen);
+withGlobal_BeaconScreen.navigationOptions = ({ navigation }) => {
+  return {
+    title: 'Список маяков',
+    headerRight: <TabButtons navigation={navigation} />
+  }
+}
+
+export default withGlobal_BeaconScreen;
