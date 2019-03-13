@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Title, Paragraph, Card, Button, Surface,
 } from 'react-native-paper';
@@ -6,8 +6,11 @@ import {
   View, Image, Text, StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { default as IconMI } from 'react-native-vector-icons/MaterialIcons';
+import uuidv4 from '../utils/Utils';
 
 function getBattaryIcon(percent) {
+  if (percent === undefined) return <Icon name="battery-empty" size={24} color="grey" />;
   if (percent > 0.775) return <Icon name="battery-full" size={24} color="green" />;
   if (percent > 0.55) return <Icon name="battery-three-quarters" size={24} color="green" />;
   if (percent > 0.325) return <Icon name="battery-half" size={24} color="green" />;
@@ -15,49 +18,35 @@ function getBattaryIcon(percent) {
   return <Icon name="battery-empty" size={24} color="red" />;
 }
 
+
 function voltageToPercent(voltage) {
-  if (voltage > 4.19) {
-    return 1.0;
-  }
-  if (voltage > 3.5) {
-    return (voltage - 3.5) / 0.7;
-  }
+  if (voltage === undefined) return undefined;
+  if (voltage > 4.19) return 1.0;
+  if (voltage > 3.5) return ((voltage - 3.5) / 0.7).toFixed(2);
   return 0.0;
 }
 
-export default BeaconCard = (props) => {
-  return (
-    <Card style={styles.card}>
-      <Card.Content style={styles.description}>
-        <View style={styles.text}>
-          <View style={styles.status}>
-            {getBattaryIcon(voltageToPercent(props.voltage))}
-            <Paragraph style={styles.date}>{props.lastUpd}</Paragraph>
-          </View>
-
-          <Title>{props.title}</Title>
-          <Paragraph>{props.phone}</Paragraph>
-          <Paragraph>{props.pos}</Paragraph>
-        </View>
-        <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
-      </Card.Content>
-
-      <Card.Actions>
-        <Button>Поиск</Button>
-        <Button>Статус</Button>
-        <Button>Редактировать</Button>
-      </Card.Actions>
-      {props.messagesCount > 0 && (
-        <Surface style={styles.surface}>
-          <Text style={{ color: 'white' }}>{props.messagesCount}</Text>
-        </Surface>
-      )}
-    </Card>
-  );
-}
-
-
 const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: 'row',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+  },
+  phoneContainer: {
+    flexDirection: 'row',
+  },
+  propsContainer: {
+
+  },
+  contentContainer: {
+    flex: 3,
+  },
+  imageContainer: {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   surface: {
     width: 32,
     height: 32,
@@ -71,30 +60,102 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 16,
   },
-  date: {
-    margin: 4,
-  },
   status: {
-    flexDirection: 'row',
-  },
-  text: {
-    flex: 3,
+    paddingLeft: 4,
   },
   image: {
-    width: 130,
-    height: 130,
-  },
-  description: {
-    flexDirection: 'row',
-  },
-  container: {
-    flex: 1,
-  },
-  content: {
-    padding: 4,
+    width: 128,
+    height: 128,
   },
   card: {
     margin: 4,
     elevation: 4,
   },
 });
+
+const BeaconStatus = ({ voltage, lastUpd }) => (
+  <View style={styles.statusContainer}>
+    {getBattaryIcon(voltageToPercent(voltage))}
+    {voltage ? (
+      <Paragraph style={styles.status}>
+        {voltageToPercent(voltage) * 100}
+        %
+      </Paragraph>
+    ) : (
+      <Paragraph style={styles.status}>н\а</Paragraph>
+    )
+    }
+    <IconMI style={styles.status} name="access-time" size={24} color="grey" />
+    {lastUpd ? (
+      <Paragraph style={styles.status}>{lastUpd}</Paragraph>
+    ) : (
+      <Paragraph style={styles.status}>Статус не обновлялся</Paragraph>
+    )
+    }
+  </View>
+);
+
+const Content = ({ title, phone }) => (
+  <View style={styles.propsContainer}>
+    <Title>{title}</Title>
+    <View style={styles.phoneContainer}>
+      <IconMI name="phone" size={24} />
+      <Paragraph style={styles.status}>{phone}</Paragraph>
+    </View>
+  </View>
+);
+
+const Actions = ({ actions }) => (
+  <Card.Actions>
+    {actions.map(({ name, ...buttonProps }) => <Button key={uuidv4()} {...buttonProps}>{name}</Button>)}
+  </Card.Actions>
+);
+
+function performAction() {
+  console.log('action');
+}
+
+function BeaconCard({
+  voltage, lastUpd, title, phone, messagesCount,
+}) {
+  const actions = [
+    {
+      name: 'Поиск',
+      icon: 'my-location',
+      onPress: () => performAction(),
+    },
+    {
+      name: 'Статус',
+      icon: 'sync',
+      onPress: () => performAction(),
+    },
+    {
+      name: 'Редактировать',
+      icon: 'edit',
+      onPress: () => performAction(),
+    },
+  ];
+
+  return (
+    <Card style={styles.card}>
+      <Card.Content style={styles.cardContainer}>
+        <View style={styles.contentContainer}>
+          <BeaconStatus voltage={voltage} lastUpd={lastUpd} />
+          <Content title={title} phone={phone} />
+        </View>
+        <View style={styles.imageContainer}>
+          <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
+        </View>
+      </Card.Content>
+
+      <Actions actions={actions} />
+      {messagesCount > 0 && (
+        <Surface style={styles.surface}>
+          <Text style={{ color: 'white' }}>{messagesCount}</Text>
+        </Surface>
+      )}
+    </Card>
+  );
+}
+
+export default BeaconCard;

@@ -18,11 +18,10 @@ const theme = {
 const AppNavigator = createStackNavigator(
   {
     Home: BeaconsScreen,
-    EditScreen: EditScreen,
+    EditScreen,
   },
   {
     initialRouteName: 'Home',
-    header: null,
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: theme.colors.primary,
@@ -44,5 +43,5 @@ export default function App() {
         <AppContainer />
       </GlobalContextProvider>
     </PaperProvider>
-  )
+  );
 }
