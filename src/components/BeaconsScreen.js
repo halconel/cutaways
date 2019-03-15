@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { FAB, IconButton } from 'react-native-paper';
+import {
+  FAB, IconButton, Dialog, Portal, TextInput, Button,
+} from 'react-native-paper';
 import BeaconCard from './BeaconCard';
 import { withGlobalContext } from './GlobalContext';
 
@@ -20,20 +22,45 @@ const styles = StyleSheet.create({
   },
 });
 
-function BeaconsScreen(props) {
-  const {
-    global: { beacons },
-  } = props;
+const MessageInput = ({ visible, message, onChangeMessage, hideDialog, onSubmit }) => (
+  <Portal>
+    <Dialog visible={visible} onDismiss={hideDialog}>
+      <Dialog.Title>Сообщение от маяка</Dialog.Title>
+      <Dialog.Content>
+        <TextInput label="SMS сообщение от маяка" multiline numberOfLines={4} value={message} onChange={onChangeMessage} />
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={() => hideDialog()}>Cancel</Button>
+        <Button onPress={() => onSubmit()}>Ok</Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
 
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {beacons.map(beacon => (
-          <BeaconCard {...beacon} />
-        ))}
-      </ScrollView>
-    </View>
-  );
+class BeaconsScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      smsInputVisible: false,
+    };
+  }
+
+  render() {
+    const {
+      global: { beacons },
+    } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+          {beacons.map(beacon => (
+            <BeaconCard {...beacon} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 function TabButtons({ navigation }) {

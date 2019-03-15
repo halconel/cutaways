@@ -6,7 +6,7 @@ import {
   View, Image, Text, StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { default as IconMI } from 'react-native-vector-icons/MaterialIcons';
+import IconMI from 'react-native-vector-icons/MaterialIcons';
 import uuidv4 from '../utils/Utils';
 
 function getBattaryIcon(percent) {
@@ -76,21 +76,12 @@ const styles = StyleSheet.create({
 const BeaconStatus = ({ voltage, lastUpd }) => (
   <View style={styles.statusContainer}>
     {getBattaryIcon(voltageToPercent(voltage))}
-    {voltage ? (
-      <Paragraph style={styles.status}>
-        {voltageToPercent(voltage) * 100}
-        %
-      </Paragraph>
-    ) : (
-      <Paragraph style={styles.status}>н\а</Paragraph>
-    )
+    {voltage ? (<Paragraph style={styles.status}>{`${voltageToPercent(voltage) * 100}%`}</Paragraph>)
+      : (<Paragraph style={styles.status}>н\а</Paragraph>)
     }
     <IconMI style={styles.status} name="access-time" size={24} color="grey" />
-    {lastUpd ? (
-      <Paragraph style={styles.status}>{lastUpd}</Paragraph>
-    ) : (
-      <Paragraph style={styles.status}>Статус не обновлялся</Paragraph>
-    )
+    {lastUpd ? (<Paragraph style={styles.status}>{lastUpd}</Paragraph>)
+      : (<Paragraph style={styles.status}>Статус не обновлялся</Paragraph>)
     }
   </View>
 );
@@ -114,6 +105,7 @@ const Actions = ({ actions }) => (
 function performAction() {
   console.log('action');
 }
+
 
 function BeaconCard({
   voltage, lastUpd, title, phone, messagesCount,
