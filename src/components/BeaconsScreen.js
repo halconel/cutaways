@@ -1,41 +1,10 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { FAB, IconButton } from 'react-native-paper';
+import {
+  FAB, IconButton, Dialog, Portal, TextInput, Button,
+} from 'react-native-paper';
 import BeaconCard from './BeaconCard';
 import { withGlobalContext } from './GlobalContext';
-
-const fistBeacon = (
-  <BeaconCard
-    title="Моя основная система"
-    phone="+7 (916) 132-12-13"
-    pos="N: 5554.2500 E: 03723.1608"
-    lastUpd="10.02.2019"
-    voltage={4.25}
-    messagesCount={10}
-  />
-);
-
-const secondBeacon = (
-  <BeaconCard
-    title="Студентическая система №1"
-    phone="+7 (916) 421-99-01"
-    pos="N: 5553.9613 E: 03143.1127"
-    lastUpd="02.02.2019"
-    voltage={3.05}
-    messagesCount={2}
-  />
-);
-
-const thirdBeacon = (
-  <BeaconCard
-    title="Студентическая система №2"
-    phone="+7 (916) 421-99-11"
-    pos="N: 5553.9613 E: 03143.1127"
-    lastUpd="02.02.2019"
-    voltage={3.59}
-    messagesCount={1}
-  />
-);
 
 const styles = StyleSheet.create({
   container: {
@@ -53,20 +22,45 @@ const styles = StyleSheet.create({
   },
 });
 
-function BeaconsScreen(props) {
-  const {
-    global: { beacons },
-  } = props;
+const MessageInput = ({ visible, message, onChangeMessage, hideDialog, onSubmit }) => (
+  <Portal>
+    <Dialog visible={visible} onDismiss={hideDialog}>
+      <Dialog.Title>Сообщение от маяка</Dialog.Title>
+      <Dialog.Content>
+        <TextInput label="SMS сообщение от маяка" multiline numberOfLines={4} value={message} onChange={onChangeMessage} />
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={() => hideDialog()}>Cancel</Button>
+        <Button onPress={() => onSubmit()}>Ok</Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
 
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {beacons.map(beacon => (
-          <BeaconCard {...props} {...beacon} />
-        ))}
-      </ScrollView>
-    </View>
-  );
+class BeaconsScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      smsInputVisible: false,
+    };
+  }
+
+  render() {
+    const {
+      global: { beacons },
+    } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+          {beacons.map(beacon => (
+            <BeaconCard {...beacon} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 function TabButtons({ navigation }) {
