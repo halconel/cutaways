@@ -18,7 +18,6 @@ function getBattaryIcon(percent) {
   return <Icon name="battery-empty" size={24} color="red" />;
 }
 
-
 function voltageToPercent(voltage) {
   if (voltage === undefined) return undefined;
   if (voltage > 4.19) return 1.0;
@@ -106,15 +105,19 @@ function performAction() {
   console.log('action');
 }
 
+function onLocate(navigation) {
+  navigation.navigate('RadarScreen');
+}
+
 
 function BeaconCard({
-  voltage, lastUpd, title, phone, messagesCount,
+  voltage, lastUpd, title, phone, messagesCount, navigation
 }) {
   const actions = [
     {
       name: 'Поиск',
       icon: 'my-location',
-      onPress: () => performAction(),
+      onPress: () => onLocate(navigation),
     },
     {
       name: 'Статус',
