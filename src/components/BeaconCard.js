@@ -25,37 +25,38 @@ function voltageToPercent(voltage) {
   return 0.0;
 }
 
-export default BeaconCard = (props) => {
-  return (
-    <Card style={styles.card}>
-      <Card.Content style={styles.description}>
-        <View style={styles.text}>
-          <View style={styles.status}>
-            {getBattaryIcon(voltageToPercent(props.voltage))}
-            <Paragraph style={styles.date}>{props.lastUpd}</Paragraph>
-          </View>
+const onLocate = (navigation) => {
+  navigation.navigate('RadarScreen');
+};
 
-          <Title>{props.title}</Title>
-          <Paragraph>{props.phone}</Paragraph>
-          <Paragraph>{props.pos}</Paragraph>
+export default (BeaconCard = props => (
+  <Card style={styles.card}>
+    <Card.Content style={styles.description}>
+      <View style={styles.text}>
+        <View style={styles.status}>
+          {getBattaryIcon(voltageToPercent(props.voltage))}
+          <Paragraph style={styles.date}>{props.lastUpd}</Paragraph>
         </View>
-        <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
-      </Card.Content>
 
-      <Card.Actions>
-        <Button>Поиск</Button>
-        <Button>Статус</Button>
-        <Button>Редактировать</Button>
-      </Card.Actions>
-      {props.messagesCount > 0 && (
-        <Surface style={styles.surface}>
-          <Text style={{ color: 'white' }}>{props.messagesCount}</Text>
-        </Surface>
-      )}
-    </Card>
-  );
-}
+        <Title>{props.title}</Title>
+        <Paragraph>{props.phone}</Paragraph>
+        <Paragraph>{props.pos}</Paragraph>
+      </View>
+      <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
+    </Card.Content>
 
+    <Card.Actions>
+      <Button onPress={() => onLocate(props.navigation)}>Поиск</Button>
+      <Button>Статус</Button>
+      <Button>Редактировать</Button>
+    </Card.Actions>
+    {props.messagesCount > 0 && (
+      <Surface style={styles.surface}>
+        <Text style={{ color: 'white' }}>{props.messagesCount}</Text>
+      </Surface>
+    )}
+  </Card>
+));
 
 const styles = StyleSheet.create({
   surface: {
