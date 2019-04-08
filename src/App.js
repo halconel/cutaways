@@ -5,6 +5,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { GlobalContextProvider } from './components/GlobalContext';
 import BeaconsScreen from './components/BeaconsScreen';
 import EditScreen from './components/EditScreen';
+import RadarScreen from './components/RadarScreen';
 
 const theme = {
   ...DefaultTheme,
@@ -19,6 +20,7 @@ const AppNavigator = createStackNavigator(
   {
     Home: BeaconsScreen,
     EditScreen,
+    RadarScreen,
   },
   {
     initialRouteName: 'Home',

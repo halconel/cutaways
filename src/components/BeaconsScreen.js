@@ -49,13 +49,14 @@ class BeaconsScreen extends Component {
   render() {
     const {
       global: { beacons },
+      navigation,
     } = this.props;
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
           {beacons.map(beacon => (
-            <BeaconCard {...beacon} />
+            <BeaconCard {...beacon} navigation={navigation} />
           ))}
         </ScrollView>
       </View>
