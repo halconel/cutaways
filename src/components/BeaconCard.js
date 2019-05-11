@@ -15,7 +15,7 @@ function getBattaryIcon(percent) {
   if (percent > 0.55) return <Icon name="battery-three-quarters" size={24} color="green" />;
   if (percent > 0.325) return <Icon name="battery-half" size={24} color="green" />;
   if (percent > 0.1) return <Icon name="battery-quarter" size={24} color="red" />;
-  return <Icon name="battery-empty" size={24} color="red" />;
+  return <Icon name="battery-empty" size={24} color="red" rotate={90} />;
 }
 
 function voltageToPercent(voltage) {
@@ -35,9 +35,7 @@ const styles = StyleSheet.create({
   phoneContainer: {
     flexDirection: 'row',
   },
-  propsContainer: {
-
-  },
+  propsContainer: {},
   contentContainer: {
     flex: 3,
   },
@@ -75,13 +73,17 @@ const styles = StyleSheet.create({
 const BeaconStatus = ({ voltage, lastUpd }) => (
   <View style={styles.statusContainer}>
     {getBattaryIcon(voltageToPercent(voltage))}
-    {voltage ? (<Paragraph style={styles.status}>{`${voltageToPercent(voltage) * 100}%`}</Paragraph>)
-      : (<Paragraph style={styles.status}>н\а</Paragraph>)
-    }
+    {voltage ? (
+      <Paragraph style={styles.status}>{`${voltageToPercent(voltage) * 100}%`}</Paragraph>
+    ) : (
+      <Paragraph style={styles.status}>н\а</Paragraph>
+    )}
     <IconMI style={styles.status} name="access-time" size={24} color="grey" />
-    {lastUpd ? (<Paragraph style={styles.status}>{lastUpd}</Paragraph>)
-      : (<Paragraph style={styles.status}>Статус не обновлялся</Paragraph>)
-    }
+    {lastUpd ? (
+      <Paragraph style={styles.status}>{lastUpd}</Paragraph>
+    ) : (
+      <Paragraph style={styles.status}>Статус не обновлялся</Paragraph>
+    )}
   </View>
 );
 
@@ -97,7 +99,11 @@ const Content = ({ title, phone }) => (
 
 const Actions = ({ actions }) => (
   <Card.Actions>
-    {actions.map(({ name, ...buttonProps }) => <Button key={uuidv4()} {...buttonProps}>{name}</Button>)}
+    {actions.map(({ name, ...buttonProps }) => (
+      <Button key={uuidv4()} {...buttonProps}>
+        {name}
+      </Button>
+    ))}
   </Card.Actions>
 );
 
@@ -105,19 +111,19 @@ function performAction() {
   console.log('action');
 }
 
-function onLocate(navigation) {
-  navigation.navigate('RadarScreen');
+function onLocate(navigation, id) {
+  const passData = { id };
+  navigation.navigate('RadarScreen', passData);
 }
 
-
 function BeaconCard({
-  voltage, lastUpd, title, phone, messagesCount, navigation
+  id, voltage, lastUpd, title, phone, messagesCount, navigation,
 }) {
   const actions = [
     {
       name: 'Поиск',
       icon: 'my-location',
-      onPress: () => onLocate(navigation),
+      onPress: () => onLocate(navigation, id),
     },
     {
       name: 'Статус',

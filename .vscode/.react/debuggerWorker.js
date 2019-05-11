@@ -51,6 +51,25 @@ var importScripts = (function(){
         vm.runInThisContext(scriptCode, {filename: scriptUrl});
     };
 })();
+// Worker is ran as nodejs process, so console.trace() writes to stderr and it leads to error in native app
+// To avoid this console.trace() is overridden to print stacktrace via console.log()
+// Please, see Node JS implementation: https://github.com/nodejs/node/blob/master/lib/internal/console/constructor.js
+console.trace = (function() {
+    return function() {
+        try {
+            var err = {
+                name: 'Trace',
+                message: require('util').format.apply(null, arguments)
+                };
+            // Node uses 10, but usually it's not enough for RN app trace
+            Error.stackTraceLimit = 30;
+            Error.captureStackTrace(err, console.trace);
+            console.log(err.stack);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+})();
 
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.

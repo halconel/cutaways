@@ -7,7 +7,9 @@ const fistBeacon = {
   key: uuidv4(),
   title: 'Моя основная система',
   phone: '+7 (916) 132-12-13',
-  pos: 'N: 5554.2500 E: 03723.1608',
+  pos: 'N: 5554.2413 E: 03723.1130',
+  lat: 55.904022,
+  lon: 37.385217,
   lastUpd: '10.02.2019',
   voltage: 3.97,
   messagesCount: 0,
@@ -18,6 +20,8 @@ const secondBeacon = {
   title: 'Студентическая система №1',
   phone: '+7 (916) 421-99-01',
   pos: 'N: 5553.9613 E: 03143.1127',
+  lat: 0,
+  lon: 0,
   lastUpd: '02.02.2019',
   voltage: 3.05,
   messagesCount: 2,
@@ -28,6 +32,8 @@ const thirdBeacon = {
   title: 'Студентическая система №2',
   phone: '+7 (916) 421-99-11',
   pos: 'N: 5553.9613 E: 03143.1127',
+  lat: 0,
+  lon: 0,
   lastUpd: '02.02.2019',
   voltage: 3.59,
   messagesCount: 1,
@@ -44,7 +50,7 @@ const GlobalContext = React.createContext({
 
 export class GlobalContextProvider extends React.Component {
   state = {
-    beacons: [fistBeacon],
+    beacons: [fistBeacon, secondBeacon],
   };
 
   addBeacon = (props) => {
@@ -61,9 +67,9 @@ export class GlobalContextProvider extends React.Component {
     });
   };
 
-  updateBeacon = (id, props) => { };
+  updateBeacon = (id, props) => {};
 
-  deleteBeacon = (id) => { };
+  deleteBeacon = (id) => {};
 
   render() {
     return (

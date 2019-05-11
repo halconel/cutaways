@@ -9,13 +9,14 @@
     "lint:fix": "eslint app/ --fix"
   },
   "dependencies": {
-    "libphonenumber-js": "^1.7.10",
-    "react": "^16.8.0",
+    "libphonenumber-js": "^1.7.16",
+    "react": "^16.8.6",
     "react-native": "^0.58.0",
-    "react-native-gesture-handler": "^1.1.0",
-    "react-native-paper": "^2.11.0",
-    "react-native-vector-icons": "^6.2.0",
-    "react-navigation": "^3.3.2"
+    "react-native-gesture-handler": "^1.2.1",
+    "react-native-paper": "^2.15.2",
+    "react-native-sensors": "^5.1.8",
+    "react-native-vector-icons": "^6.4.2",
+    "react-navigation": "^3.9.1"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
@@ -24,9 +25,9 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-google": "^0.12.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react": "^7.13.0",
     "jest": "24.1.0",
     "metro-react-native-babel-preset": "0.51.1",
     "react-test-renderer": "16.6.3"

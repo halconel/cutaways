@@ -22,12 +22,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const MessageInput = ({ visible, message, onChangeMessage, hideDialog, onSubmit }) => (
+const MessageInput = ({
+  visible, message, onChangeMessage, hideDialog, onSubmit,
+}) => (
   <Portal>
     <Dialog visible={visible} onDismiss={hideDialog}>
       <Dialog.Title>Сообщение от маяка</Dialog.Title>
       <Dialog.Content>
-        <TextInput label="SMS сообщение от маяка" multiline numberOfLines={4} value={message} onChange={onChangeMessage} />
+        <TextInput
+          label="SMS сообщение от маяка"
+          multiline
+          numberOfLines={4}
+          value={message}
+          onChange={onChangeMessage}
+        />
       </Dialog.Content>
       <Dialog.Actions>
         <Button onPress={() => hideDialog()}>Cancel</Button>
@@ -56,7 +64,7 @@ class BeaconsScreen extends Component {
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
           {beacons.map(beacon => (
-            <BeaconCard {...beacon} navigation={navigation} />
+            <BeaconCard {...beacon} id={beacon.key} navigation={navigation} />
           ))}
         </ScrollView>
       </View>
@@ -83,10 +91,10 @@ function TabButtons({ navigation }) {
   );
 }
 
-const withGlobal_BeaconScreen = withGlobalContext(BeaconsScreen);
-withGlobal_BeaconScreen.navigationOptions = ({ navigation }) => ({
+const withGlobalBeaconScreen = withGlobalContext(BeaconsScreen);
+withGlobalBeaconScreen.navigationOptions = ({ navigation }) => ({
   title: 'Список маяков',
   headerRight: <TabButtons navigation={navigation} />,
 });
 
-export default withGlobal_BeaconScreen;
+export default withGlobalBeaconScreen;
