@@ -5,25 +5,9 @@ import {
 import {
   View, Image, Text, StyleSheet,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import IconMI from 'react-native-vector-icons/MaterialIcons';
-import uuidv4 from '../utils/Utils';
-
-function getBattaryIcon(percent) {
-  if (percent === undefined) return <Icon name="battery-empty" size={24} color="grey" />;
-  if (percent > 0.775) return <Icon name="battery-full" size={24} color="green" />;
-  if (percent > 0.55) return <Icon name="battery-three-quarters" size={24} color="green" />;
-  if (percent > 0.325) return <Icon name="battery-half" size={24} color="green" />;
-  if (percent > 0.1) return <Icon name="battery-quarter" size={24} color="red" />;
-  return <Icon name="battery-empty" size={24} color="red" rotate={90} />;
-}
-
-function voltageToPercent(voltage) {
-  if (voltage === undefined) return undefined;
-  if (voltage > 4.19) return 1.0;
-  if (voltage > 3.5) return ((voltage - 3.5) / 0.7).toFixed(2);
-  return 0.0;
-}
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { getBattaryIcon, voltageToPercent } from './BattaryIcon';
+import { uuidv4 } from '../utils/Utils';
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -70,28 +54,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const BeaconStatus = ({ voltage, lastUpd }) => (
-  <View style={styles.statusContainer}>
-    {getBattaryIcon(voltageToPercent(voltage))}
-    {voltage ? (
-      <Paragraph style={styles.status}>{`${voltageToPercent(voltage) * 100}%`}</Paragraph>
-    ) : (
-      <Paragraph style={styles.status}>н\а</Paragraph>
-    )}
-    <IconMI style={styles.status} name="access-time" size={24} color="grey" />
-    {lastUpd ? (
-      <Paragraph style={styles.status}>{lastUpd}</Paragraph>
-    ) : (
-      <Paragraph style={styles.status}>Статус не обновлялся</Paragraph>
-    )}
-  </View>
-);
+const BeaconStatus = ({ voltage, lastUpd }) => {
+  const battaryText = voltage ? `${voltageToPercent(voltage) * 100}%` : 'н\\а';
+  const lastUpdText = lastUpd || 'Статус не обновлялся';
+  return (
+    <View style={styles.statusContainer}>
+      {getBattaryIcon(voltage)}
+      <Paragraph style={styles.status}>{battaryText}</Paragraph>
+      <Icon style={styles.status} name="access-time" size={24} color="grey" />
+      <Paragraph style={styles.status}>{lastUpdText}</Paragraph>
+    </View>
+  );
+};
 
 const Content = ({ title, phone }) => (
   <View style={styles.propsContainer}>
     <Title>{title}</Title>
     <View style={styles.phoneContainer}>
-      <IconMI name="phone" size={24} />
+      <Icon name="phone" size={24} />
       <Paragraph style={styles.status}>{phone}</Paragraph>
     </View>
   </View>

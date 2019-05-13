@@ -54,16 +54,14 @@ export default class Arrow extends Component {
     if (display > 360) display -= 360;
 
     return (
-      <View>
+      <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Animated.Image
             resizeMode="contain"
             source={require('../../assets/arrow-up.png')}
             style={{
               width: deviceWidth / 5,
-              // height: 40,
-              // left: deviceWidth / 2 - (deviceWidth - 10) / 2,
-              top: deviceHeight / 2 - (deviceHeight / 2 - 10) / 2,
+              height: deviceWidth / 5,
               transform: [{ rotate: spin }],
             }}
           />
@@ -80,21 +78,20 @@ const deviceHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'blue',
+    // backgroundColor: 'green',
   },
   text: {
     flex: 1,
     color: '#263544',
     fontSize: 40,
-    backgroundColor: 'yellow',
+    // backgroundColor: 'yellow',
   },
   imageContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 3,
+    justifyContent: 'flex-end',
     opacity: 0.8,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
   },
 });

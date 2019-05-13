@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
-import uuidv4 from '../utils/Utils';
+import { uuidv4 } from '../utils/Utils';
 
 const fistBeacon = {
   key: uuidv4(),
@@ -67,9 +67,9 @@ export class GlobalContextProvider extends React.Component {
     });
   };
 
-  updateBeacon = (id, props) => {};
+  updateBeacon = (id, props) => { };
 
-  deleteBeacon = (id) => {};
+  deleteBeacon = (id) => { };
 
   render() {
     return (
