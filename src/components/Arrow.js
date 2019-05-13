@@ -1,57 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Text, View, StyleSheet, Image, Animated, Easing, Dimensions,
+  Text, View, StyleSheet, Animated, Dimensions,
 } from 'react-native';
 
 export default class Arrow extends Component {
-  constructor() {
-    super();
-    this.spinValue = new Animated.Value(0);
-    this.state = {
-      location: null,
-      errorMessage: null,
-      heading: null,
-      truenoth: null,
-    };
-  }
-
-  componentWillUpdate() {
-    this.spin();
-  }
-
-  spin() {
-    const start = JSON.stringify(this.spinValue);
-    const heading = Math.round(this.state.heading);
-
-    let rot = +start;
-    const rotM = rot % 360;
-
-    if (rotM < 180 && heading > rotM + 180) rot -= 360;
-    if (rotM >= 180 && heading <= rotM - 180) rot += 360;
-
-    rot += heading - rotM;
-
-    Animated.timing(this.spinValue, {
-      toValue: rot,
-      duration: 300,
-      easing: Easing.easeInOut,
-    }).start();
-  }
-
   render() {
-    let display = 'Loading...';
-
-    if (this.state.errorMessage) display = this.state.errorMessage;
-
-    const spin = this.spinValue.interpolate({
+    const spin = this.props.spinValue.interpolate({
       inputRange: [0, 360],
       outputRange: ['-0deg', '-360deg'],
     });
-
-    display = Math.round(JSON.stringify(this.spinValue));
-
-    if (display < 0) display += 360;
-    if (display > 360) display -= 360;
 
     return (
       <View style={styles.container}>
@@ -66,7 +23,6 @@ export default class Arrow extends Component {
             }}
           />
         </View>
-        <Text style={styles.text}>{`${display}°`}</Text>
       </View>
     );
   }
@@ -74,24 +30,16 @@ export default class Arrow extends Component {
 
 // Device dimensions so we can properly center the images set to 'position: absolute'
 const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
+// const deviceHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // backgroundColor: 'green',
-  },
-  text: {
-    flex: 1,
-    color: '#263544',
-    fontSize: 40,
-    // backgroundColor: 'yellow',
   },
   imageContainer: {
     flex: 3,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     opacity: 0.8,
-    // backgroundColor: 'blue',
   },
 });

@@ -6,7 +6,7 @@ import {
   View, Image, Text, StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { getBattaryIcon, voltageToPercent } from './BattaryIcon';
+import { getBatteryIcon, voltageToPercent } from './BatteryIcon';
 import { uuidv4 } from '../utils/Utils';
 
 const styles = StyleSheet.create({
@@ -59,7 +59,7 @@ const BeaconStatus = ({ voltage, lastUpd }) => {
   const lastUpdText = lastUpd || 'Статус не обновлялся';
   return (
     <View style={styles.statusContainer}>
-      {getBattaryIcon(voltage)}
+      {getBatteryIcon(voltage)}
       <Paragraph style={styles.status}>{battaryText}</Paragraph>
       <Icon style={styles.status} name="access-time" size={24} color="grey" />
       <Paragraph style={styles.status}>{lastUpdText}</Paragraph>

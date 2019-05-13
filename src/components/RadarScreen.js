@@ -1,13 +1,14 @@
 import React, { Component, Platform } from 'react';
 import {
-  StyleSheet, View, Text, Alert, PermissionsAndroid,
+  StyleSheet, View, Text, PermissionsAndroid, Animated, Easing,
 } from 'react-native';
 import { IconButton, Paragraph, Title } from 'react-native-paper';
 import * as Sensors from 'react-native-sensors';
 import Arrow from './Arrow';
 import { withGlobalContext } from './GlobalContext';
 import { distance, barring, angle } from '../utils/Utils';
-import { getBattaryIcon } from './BattaryIcon';
+import Kalman from '../utils/KalmanFilter';
+import { getBatteryIcon } from './BatteryIcon';
 
 const styles = StyleSheet.create({
   tab: {
@@ -26,6 +27,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+const kf_x = new Kalman({ R: 0.01, Q: 2 });
+const kf_y = new Kalman({ R: 0.01, Q: 2 });
 
 const MainTitle = ({ title, voltage }) => {
   const _styles = StyleSheet.create({
@@ -48,68 +52,58 @@ const MainTitle = ({ title, voltage }) => {
   return (
     <View style={_styles.container}>
       <Title style={_styles.title}>{title}</Title>
-      <View style={_styles.icon}>
-        {getBattaryIcon(voltage)}
-      </View>
+      <View style={_styles.icon}>{getBatteryIcon(voltage)}</View>
     </View>
   );
-}
+};
 
 const requestPermission = () => {
   if (Platform.OS === 'ios') return Promise.resolve(true);
-  return PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  ).then((granted) => {
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      return Promise.resolve("You can use the location")
-    }
-    return Promise.reject("Location permission denied")
-  });
+  return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(
+    (granted) => {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return Promise.resolve('You can use the location');
+      }
+      return Promise.reject('Location permission denied');
+    },
+  );
 };
 
 class RadarScreen extends Component {
   constructor(props) {
     super(props);
 
+    this.spinValue = new Animated.Value(0);
     this.state = {
       latitude: null,
       longitude: null,
       error: null,
-      magnetometer: '0',
+      compass: 0,
+      heading: null,
     };
   }
 
   componentDidMount() {
+    const posHandler = (position) => {
+      const { latitude, longitude } = position.coords;
+      this.setState({ latitude, longitude });
+    };
+    const errHandler = error => this.setState({ error: error.message });
+    const options = { enableHighAccuracy: true, timeout: 20000, distanceFilter: 10 };
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        this.setState({ latitude, longitude });
-      },
-      error => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 20000 },
-    );
-    this.watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      error => this.setState({ error: error.message }),
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        distanceFilter: 10,
-      },
-    );
-    // this._toggle();
+    navigator.geolocation.getCurrentPosition(posHandler, errHandler, options);
+    this.watchId = navigator.geolocation.watchPosition(posHandler, errHandler, options);
+    this._toggle();
   }
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchId);
     this._subscription && this._subscription.stop();
     this._subscription = null;
+  }
+
+  componentWillUpdate() {
+    this.spin();
   }
 
   _toggle = () => {
@@ -119,12 +113,37 @@ class RadarScreen extends Component {
 
   _subscribe = () => {
     const { magnetometer } = Sensors;
-    this._subscription = magnetometer.subscribe((sensorData) => {
-      console.log(sensorData);
-      this.setState({ magnetometer: angle(sensorData) });
+
+    this._subscription = magnetometer.subscribe( async (sensorData) => {
+      const { compass } = this.state;
+      let { x, y } = sensorData;
+      // Kalman filter
+      x = kf_x.filter(x);
+      y = kf_y.filter(y);
+      // Calc angle
+      const newAngle = angle({ x, y });
+      if (compass !== newAngle) this.setState({ compass: newAngle });
     });
   };
 
+  spin() {
+    const start = JSON.stringify(this.spinValue);
+    const { compass, heading } = this.state;
+
+    let rot = +start;
+    const rotM = rot % 360;
+
+    if (rotM < 180 && compass > rotM + 180) rot -= 360;
+    if (rotM >= 180 && compass <= rotM - 180) rot += 360;
+
+    rot += compass - rotM;
+
+    Animated.timing(this.spinValue, {
+      toValue: rot,
+      duration: 300,
+      //easing: Easing.easeInOut,
+    }).start();
+  }
 
   render() {
     const {
@@ -132,7 +151,7 @@ class RadarScreen extends Component {
       navigation,
     } = this.props;
 
-    const { latitude, longitude, magnetometer } = this.state;
+    const { latitude, longitude, compass } = this.state;
     const id = navigation.getParam('id', '');
     const beacon = beacons.find(b => b.key === id);
 
@@ -141,50 +160,9 @@ class RadarScreen extends Component {
         <View style={styles.green}>
           <MainTitle title={beacon.title} voltage={beacon.voltage} />
         </View>
-        <View style={styles.red}>
-          <Text>Место положение телефона:</Text>
-          <Text>
-            {' '}
-            Широта:
-            {latitude}
-          </Text>
-          <Text>
-            {' '}
-            Долгота:
-            {longitude}
-          </Text>
-          <Text>Место положение маяка:</Text>
-          <Text>
-            {' '}
-            Широта:
-            {beacon.lat}
-          </Text>
-          <Text>
-            {' '}
-            Долгота:
-            {beacon.lon}
-          </Text>
-          <Text>
-            Расстаяние (км.):
-            {' '}
-            {latitude && distance(latitude, longitude, beacon.lat, beacon.lon)}
-          </Text>
-          <Text>
-            Азимут (град.):
-            {' '}
-            {latitude && barring(latitude, longitude, beacon.lat, beacon.lon)}
-          </Text>
-          <Text>
-            Компасс (град.):
-            {magnetometer}
-          </Text>
-          <Text>
-            Ошибка:
-            {JSON.stringify(this.state.error)}
-          </Text>
-        </View>
+        <View style={styles.red} />
         <View style={styles.yellow}>
-          <Arrow heading={90} />
+          <Arrow spinValue={this.spinValue} />
         </View>
       </View>
     );

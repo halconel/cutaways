@@ -37,7 +37,7 @@ export function barring(lat1, lon1, lat2, lon2) {
 
   const y = Math.sin(dLon) * Math.cos(la2);
   const x = Math.cos(la1) * Math.sin(la2) - Math.sin(la1) * Math.cos(la2) * Math.cos(dLon);
-  return radiansToDegrees(Math.atan2(y, x));
+  return Math.round(radiansToDegrees(Math.atan2(y, x)));
 }
 
 export function angle(magnetometer) {
