@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { IconButton, Paragraph, Title } from 'react-native-paper';
 import { setUpdateIntervalForType, magnetometer, SensorTypes } from 'react-native-sensors';
+import RNSimpleCompass from 'react-native-simple-compass';
 import Arrow from './Arrow';
 import { withGlobalContext } from './GlobalContext';
 import { distance, barring, angle } from '../utils/Utils';
@@ -17,7 +18,12 @@ const styles = StyleSheet.create({
   },
   red: {
     flex: 4,
-    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'red',
+  },
+  distance: {
+    fontSize: 48,
   },
   yellow: {
     flex: 3,
@@ -69,6 +75,11 @@ const requestPermission = () => {
   );
 };
 
+const formatDistance = (distance) => {
+  if (distance < 1) return `${Math.round(distance * 1000)} м.`;
+  return `${Math.round(distance * 10) / 10} км.`;
+};
+
 class RadarScreen extends Component {
   constructor(props) {
     super(props);
@@ -89,6 +100,7 @@ class RadarScreen extends Component {
 
   componentDidMount() {
     const { beacon } = this;
+    // GPS
     const posHandler = (position) => {
       const { latitude, longitude } = position.coords;
       const heading = latitude && barring(latitude, longitude, beacon.lat, beacon.lon);
@@ -100,7 +112,8 @@ class RadarScreen extends Component {
       navigator.geolocation.getCurrentPosition(posHandler, errHandler, options);
       this.watchId = navigator.geolocation.watchPosition(posHandler, errHandler, options);
     });
-    this._toggle();
+    // Compass
+    this._subscribe();
   }
 
   componentWillUpdate() {
@@ -108,9 +121,10 @@ class RadarScreen extends Component {
   }
 
   componentWillUnmount() {
+    RNSimpleCompass.stop();
     navigator.geolocation.clearWatch(this.watchId);
-    this._subscription && this._subscription.stop();
-    this._subscription = null;
+    //this._subscription && this._subscription.stop();
+    //this._subscription = null;
   }
 
   _toggle = () => {
@@ -119,17 +133,21 @@ class RadarScreen extends Component {
   };
 
   _subscribe = () => {
-    setUpdateIntervalForType(SensorTypes.magnetometer, 250);
-    this._subscription = magnetometer.subscribe(async (sensorData) => {
-      const { compass } = this.state;
-      let { x, y } = sensorData;
-      // Kalman filter
-      x = kf_x.filter(x);
-      y = kf_y.filter(y);
-      // Calc angle
-      const newAngle = angle({ x, y }) - 90;
-      if (compass !== newAngle) this.setState({ compass: newAngle });
+    const degree_update_rate = 3; // Number of degrees changed before the callback is triggered
+    RNSimpleCompass.start(degree_update_rate, (degree) => {
+      this.setState({ compass: degree });
     });
+    //setUpdateIntervalForType(SensorTypes.magnetometer, 250);
+    //this._subscription = magnetometer.subscribe(async (sensorData) => {
+    //  const { compass } = this.state;
+    //  let { x, y } = sensorData;
+    //  // Kalman filter
+    //  x = kf_x.filter(x);
+    //  y = kf_y.filter(y);
+    //  // Calc angle
+    //  const newAngle = angle({ x, y }) - 90;
+    //  if (compass !== newAngle) this.setState({ compass: newAngle });
+    //});
   };
 
   spin() {
@@ -161,16 +179,9 @@ class RadarScreen extends Component {
           <MainTitle title={beacon.title} voltage={beacon.voltage} />
         </View>
         <View style={styles.red}>
-          <Text>Место положение телефона:</Text>
-          <Text>{` Широта:  ${latitude}`}</Text>
-          <Text>{` Долгота: ${longitude}`}</Text>
-          <Text>Место положение маяка:</Text>
-          <Text>{` Широта:  ${beacon.lat}`}</Text>
-          <Text>{` Долгота: ${beacon.lon}`}</Text>
-          <Text>{`Расстаяние (км.): ${latitude && distance(latitude, longitude, beacon.lat, beacon.lon)}`}</Text>
-          <Text>{`Азимут (град.): ${latitude && barring(latitude, longitude, beacon.lat, beacon.lon)}`}</Text>
-          <Text>{`Компасс (град.): ${compass}`}</Text>
-          <Text>{`Ошибка: ${JSON.stringify(error)}`}</Text>
+          <Text style={styles.distance}>
+            {`${latitude ? formatDistance(distance(latitude, longitude, beacon.lat, beacon.lon)) : 'Местоположение телефона не определено'}`}
+          </Text>
         </View>
         <View style={styles.yellow}>
           <Arrow spinValue={this.spinValue} />
