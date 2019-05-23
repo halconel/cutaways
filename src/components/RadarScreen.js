@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   red: {
-    flex: 4,
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: 'red',
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   yellow: {
-    flex: 3,
+    flex: 4,
     // backgroundColor: 'yellow',
   },
   container: {
@@ -175,9 +175,6 @@ class RadarScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.green}>
-          <MainTitle title={beacon.title} voltage={beacon.voltage} />
-        </View>
         <View style={styles.red}>
           <Text style={styles.distance}>
             {`${latitude ? formatDistance(distance(latitude, longitude, beacon.lat, beacon.lon)) : 'Местоположение телефона не определено'}`}

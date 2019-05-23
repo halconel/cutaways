@@ -17,8 +17,8 @@ export default class Arrow extends Component {
             resizeMode="contain"
             source={require('../../assets/arrow-up.png')}
             style={{
-              width: deviceWidth / 5,
-              height: deviceWidth / 5,
+              width: deviceWidth / 4,
+              height: deviceWidth / 4,
               transform: [{ rotate: spin }],
             }}
           />

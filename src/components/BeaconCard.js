@@ -124,9 +124,9 @@ function BeaconCard({
           <BeaconStatus voltage={voltage} lastUpd={lastUpd} />
           <Content title={title} phone={phone} />
         </View>
-        <View style={styles.imageContainer}>
+        {null && (<View style={styles.imageContainer}>
           <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
-        </View>
+        </View>)}
       </Card.Content>
 
       <Actions actions={actions} />
