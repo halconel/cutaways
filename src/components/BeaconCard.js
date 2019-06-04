@@ -119,7 +119,10 @@ function BeaconCard({
     {
       name: 'Редактировать',
       icon: 'edit',
-      onPress: () => performAction(),
+      onPress: () => {
+        const passData = { title, phone };
+        navigation.navigate('EditScreen', passData);
+      },
     },
   ];
 

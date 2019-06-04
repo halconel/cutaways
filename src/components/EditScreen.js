@@ -56,11 +56,12 @@ function AppInput({ icon, helper, ...textProps }) {
 
 function Form(props) {
   const {
-    title, phone, onChangeName, onChangePhone, onSubmit,
+    title, phone, message, onChangeName, onChangePhone, onChangeMessage,
   } = props;
 
   const titleHelper = 'Введите наименование маяка для отображения в списке.';
   const phoneHelper = 'Введите номер телефона в междунароном формате. Например, +7 911 123-12-13';
+  const messageHelper = '(Не обязательно) Скопируйте в это поле последнее сообщение от маяка.';
 
   return (
     <View style={styles.formContainer}>
@@ -79,6 +80,14 @@ function Form(props) {
         helper={phoneHelper}
         onChangeText={onChangePhone}
       />
+      <AppInput
+        icon="map-marker"
+        label="Последнее сообщение от маяка"
+        value={message}
+        helper={messageHelper}
+        multiline
+        onChangeText={onChangeMessage}
+      />
     </View>
   );
 }
@@ -88,11 +97,12 @@ class EditScreen extends Component {
     super(props);
 
     const {
-      title = '',
-      phone = '',
       navigation,
-      global: { addBeacon },
+      global: { addBeacon, updateBeacon },
     } = props;
+
+    const title = navigation.getParam('title', '');
+    const phone = navigation.getParam('phone', '');
 
     this.state = { title, phone };
     this.navigation = navigation;
