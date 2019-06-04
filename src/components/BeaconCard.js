@@ -8,6 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getBatteryIcon, voltageToPercent } from './BatteryIcon';
 import { uuidv4 } from '../utils/Utils';
+import sendGetStatus from '../utils/Sms';
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -96,6 +97,11 @@ function onLocate(navigation, id) {
   navigation.navigate('RadarScreen', passData);
 }
 
+function onGetStatus(navigation, phone) {
+  sendGetStatus(phone);
+  this.setState({ modalVisible: true });
+}
+
 function BeaconCard({
   id, voltage, lastUpd, title, phone, messagesCount, navigation,
 }) {
@@ -108,7 +114,7 @@ function BeaconCard({
     {
       name: 'Статус',
       icon: 'sync',
-      onPress: () => performAction(),
+      onPress: () => onGetStatus(navigation, phone),
     },
     {
       name: 'Редактировать',
@@ -124,9 +130,11 @@ function BeaconCard({
           <BeaconStatus voltage={voltage} lastUpd={lastUpd} />
           <Content title={title} phone={phone} />
         </View>
-        {null && (<View style={styles.imageContainer}>
-          <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
-        </View>)}
+        {null && (
+          <View style={styles.imageContainer}>
+            <Image source={require('../../assets/no-default-thumbnail.png')} style={styles.image} />
+          </View>
+        )}
       </Card.Content>
 
       <Actions actions={actions} />

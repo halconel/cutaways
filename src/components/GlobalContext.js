@@ -2,6 +2,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import { uuidv4 } from '../utils/Utils';
+import { AsyncStorage } from 'react-native';
 
 const fistBeacon = {
   key: uuidv4(),
@@ -50,21 +51,28 @@ const GlobalContext = React.createContext({
 
 export class GlobalContextProvider extends React.Component {
   state = {
-    beacons: [fistBeacon, secondBeacon],
-  };
+    beacons: [],
+  }
+
+  constructor(props) {
+    super(props);
+    AsyncStorage.getItem('@cutaways:beacons').then((value) => {
+      console.log(value);
+      this.setState({ beacons: JSON.parse(value) });
+    });
+  }
+
 
   addBeacon = (props) => {
     const { beacons } = this.state;
-    this.setState({
-      beacons: [
-        ...beacons,
-        {
-          key: uuidv4(),
-          title: props.title,
-          phone: props.phone,
-        },
-      ],
-    });
+    const newBeacon = {
+      key: uuidv4(),
+      title: props.title,
+      phone: props.phone,
+    };
+    this.setState({ beacons: [...beacons, newBeacon] });
+    AsyncStorage.setItem('@cutaways:beacons', JSON.stringify([...beacons, newBeacon])).done();
+    console.log(JSON.stringify([...beacons, newBeacon]));
   };
 
   updateBeacon = (id, props) => { };

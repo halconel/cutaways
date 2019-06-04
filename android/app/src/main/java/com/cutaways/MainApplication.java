@@ -32,8 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNSimpleCompassPackage(),
             new VectorIconsPackage(),
             new RNSensorsPackage(),
-            new RNGestureHandlerPackage(),
-            SendSMSPackage.getInstance()
+            new RNGestureHandlerPackage()
       );
     }
 

@@ -25,25 +25,25 @@ const styles = StyleSheet.create({
 const MessageInput = ({
   visible, message, onChangeMessage, hideDialog, onSubmit,
 }) => (
-  <Portal>
-    <Dialog visible={visible} onDismiss={hideDialog}>
-      <Dialog.Title>Сообщение от маяка</Dialog.Title>
-      <Dialog.Content>
-        <TextInput
-          label="SMS сообщение от маяка"
-          multiline
-          numberOfLines={4}
-          value={message}
-          onChange={onChangeMessage}
-        />
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button onPress={() => hideDialog()}>Cancel</Button>
-        <Button onPress={() => onSubmit()}>Ok</Button>
-      </Dialog.Actions>
-    </Dialog>
-  </Portal>
-);
+    <Portal>
+      <Dialog visible={visible} onDismiss={hideDialog}>
+        <Dialog.Title>Сообщение от маяка</Dialog.Title>
+        <Dialog.Content>
+          <TextInput
+            label="SMS сообщение от маяка"
+            multiline
+            numberOfLines={4}
+            value={message}
+            onChange={onChangeMessage}
+          />
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => hideDialog()}>Cancel</Button>
+          <Button onPress={() => onSubmit()}>Ok</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
+  );
 
 class BeaconsScreen extends Component {
   constructor(props) {
