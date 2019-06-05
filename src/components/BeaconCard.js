@@ -92,8 +92,8 @@ function performAction() {
   console.log('action');
 }
 
-function onLocate(navigation, id) {
-  const passData = { id };
+function onLocate(navigation, id, title) {
+  const passData = { id, title };
   navigation.navigate('RadarScreen', passData);
 }
 
@@ -109,7 +109,7 @@ function BeaconCard({
     {
       name: 'Поиск',
       icon: 'my-location',
-      onPress: () => onLocate(navigation, id),
+      onPress: () => onLocate(navigation, id, title),
     },
     {
       name: 'Статус',
@@ -120,7 +120,12 @@ function BeaconCard({
       name: 'Редактировать',
       icon: 'edit',
       onPress: () => {
-        const passData = { title, phone };
+        const passData = {
+          id,
+          title,
+          phone,
+          editing: true,
+        };
         navigation.navigate('EditScreen', passData);
       },
     },

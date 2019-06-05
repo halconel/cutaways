@@ -210,7 +210,7 @@ function parseBattary(msg) {
   };
 }
 
-export default function parseMatches(mathces) {
+export function parseMatches(mathces) {
   return {
     ...parseGPRS(mathces[1]),
     ...parseGSM(mathces[2]),

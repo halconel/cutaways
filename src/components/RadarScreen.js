@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, PermissionsAndroid, Animated, Easing, Platform,
+  StyleSheet, View, Text, PermissionsAndroid, Animated, Easing, Platform, Linking
 } from 'react-native';
 import { IconButton, Paragraph, Title } from 'react-native-paper';
 import { setUpdateIntervalForType, magnetometer, SensorTypes } from 'react-native-sensors';
@@ -188,28 +188,39 @@ class RadarScreen extends Component {
   }
 }
 
-function onMap() {
-  console.log('Map');
+function onMap(label, lat, lng) {
+  const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+  const latLng = `${lat},${lng}`;
+  const url = Platform.select({
+    ios: `${scheme}${label}@${latLng}`,
+    android: `${scheme}${latLng}(${label})`,
+  });
+
+  Linking.openURL(url);
 }
 
 function onSync() {
   console.log('Sync');
 }
 
-function TabButtons({ navigation }) {
-  const passData = { titleNavBar: 'Добавление маяка' };
+function TabButtons({ navigation, global }) {
+  const title = navigation.getParam('title', 'Маяк');
+  const id = navigation.getParam('id', null);
+  const beacon = global.beacons.find(b => b.key === id);
 
   return (
     <View style={styles.tab}>
-      <IconButton color="#fff" icon="map" onPress={() => onMap()} />
+      <IconButton color="#fff" icon="map" onPress={() => onMap(title, beacon.lat, beacon.lon)} />
       <IconButton color="#fff" icon="sync" onPress={() => onSync()} />
     </View>
   );
 }
 
 const withGlobalRadarScreen = withGlobalContext(RadarScreen);
+const WithGlobalTabButton = withGlobalContext(TabButtons);
+
 withGlobalRadarScreen.navigationOptions = ({ navigation }) => ({
   title: 'Поиск',
-  headerRight: <TabButtons navigation={navigation} />,
+  headerRight: <WithGlobalTabButton navigation={navigation} />,
 });
 export default withGlobalRadarScreen;

@@ -73,7 +73,10 @@ class BeaconsScreen extends Component {
 }
 
 function TabButtons({ navigation }) {
-  const passData = { titleNavBar: 'Добавление маяка' };
+  const passData = {
+    titleNavBar: 'Добавление маяка',
+    adding: true,
+  };
 
   return (
     <View style={styles.tab}>

@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
-import { uuidv4 } from '../utils/Utils';
 import { AsyncStorage } from 'react-native';
+import { uuidv4 } from '../utils/Utils';
+import { parseMatches, getMatches } from '../utils/Nmea';
 
 const fistBeacon = {
   key: uuidv4(),
@@ -57,27 +58,71 @@ export class GlobalContextProvider extends React.Component {
   constructor(props) {
     super(props);
     AsyncStorage.getItem('@cutaways:beacons').then((value) => {
-      console.log(value);
-      this.setState({ beacons: JSON.parse(value) });
+      if (value !== null) this.setState({ beacons: JSON.parse(value) });
     });
   }
 
+  today = () => {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+
+    return `${mm}.${dd}.${yyyy}`;
+  }
 
   addBeacon = (props) => {
     const { beacons } = this.state;
+    // Основные поля: имя и телефон
     const newBeacon = {
       key: uuidv4(),
       title: props.title,
       phone: props.phone,
     };
+    // Если было передано gps сообщение, парсим его и добавляем значения для маяка
+    if (props.message.length > 0) {
+      const m = getMatches(props.message);
+      if (m != null) {
+        const gpsData = parseMatches(m);
+        Object.assign(newBeacon, gpsData);
+        newBeacon.lastUpd = this.today();
+      }
+    }
+    // Обновим стайт приложения
     this.setState({ beacons: [...beacons, newBeacon] });
+    // Запишем состояние в хранилище
     AsyncStorage.setItem('@cutaways:beacons', JSON.stringify([...beacons, newBeacon])).done();
-    console.log(JSON.stringify([...beacons, newBeacon]));
   };
 
-  updateBeacon = (id, props) => { };
+  updateBeacon = (props) => {
+    const { beacons } = this.state;
+    const beacon = beacons.find(b => b.key === props.id);
+    // Основные поля: имя и телефон
+    beacon.title = props.title;
+    beacon.phone = props.phone;
+    // Если было передано gps сообщение, парсим его и добавляем значения для маяка
+    if (props.message.length > 0) {
+      const m = getMatches(props.message);
+      if (m != null) {
+        const gpsData = parseMatches(m);
+        Object.assign(beacon, gpsData);
+        beacon.lastUpd = this.today();
+      }
+    }
 
-  deleteBeacon = (id) => { };
+    // Обновим стайт приложения
+    this.setState({ beacons: [...beacons] });
+    // Запишем состояние в хранилище
+    AsyncStorage.setItem('@cutaways:beacons', JSON.stringify([...beacons])).done();
+  };
+
+  deleteBeacon = (id) => {
+    let { beacons } = this.state;
+    beacons = beacons.filter(el => el.key !== id);
+    this.setState({ beacons });
+    // Запишем состояние в хранилище
+    AsyncStorage.setItem('@cutaways:beacons', JSON.stringify([...beacons])).done();
+  };
 
   render() {
     return (
