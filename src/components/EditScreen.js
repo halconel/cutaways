@@ -161,7 +161,7 @@ class EditScreen extends Component {
   }
 
   componentWillMount() {
-    console.log('componentWillMount');
+    //console.log('componentWillMount');
     this.navigation.setParams({ setModalVisible: this.setModalVisible.bind(this) });
   }
 

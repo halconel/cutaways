@@ -8,11 +8,11 @@ export default class MyAppBar extends Component {
     this.state = {};
   }
 
-  _goBack = () => console.log('Went back');
+  _goBack = () => { }
 
-  _onSearch = () => console.log('Searching');
+  _onSearch = () => { }
 
-  _onMore = () => console.log('Shown more');
+  _onMore = () => { }
 
   render() {
     return (

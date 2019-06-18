@@ -7,6 +7,6 @@ export default function sendGetStatus(phone) {
     successTypes: ['sent', 'queued'],
     allowAndroidSendWithoutReadPermission: true,
   }, (completed, cancelled, error) => {
-    console.log(`SMS Callback: completed: ${completed} cancelled: ${cancelled} error: ${error}`);
+    //console.log(`SMS Callback: completed: ${completed} cancelled: ${cancelled} error: ${error}`);
   });
 }

@@ -89,7 +89,7 @@ const Actions = ({ actions }) => (
 );
 
 function performAction() {
-  console.log('action');
+  //console.log('action');
 }
 
 function onLocate(navigation, id, title) {
@@ -111,11 +111,11 @@ function BeaconCard({
       icon: 'my-location',
       onPress: () => onLocate(navigation, id, title),
     },
-    {
-      name: 'Статус',
-      icon: 'sync',
-      onPress: () => onGetStatus(navigation, phone),
-    },
+    //{
+    //  name: 'Статус',
+    //  icon: 'sync',
+    //  onPress: () => onGetStatus(navigation, phone),
+    //},
     {
       name: 'Редактировать',
       icon: 'edit',

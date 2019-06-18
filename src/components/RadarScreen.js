@@ -200,7 +200,7 @@ function onMap(label, lat, lng) {
 }
 
 function onSync() {
-  console.log('Sync');
+  //console.log('Sync');
 }
 
 function TabButtons({ navigation, global }) {
@@ -211,7 +211,6 @@ function TabButtons({ navigation, global }) {
   return (
     <View style={styles.tab}>
       <IconButton color="#fff" icon="map" onPress={() => onMap(title, beacon.lat, beacon.lon)} />
-      <IconButton color="#fff" icon="sync" onPress={() => onSync()} />
     </View>
   );
 }

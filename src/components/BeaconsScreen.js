@@ -85,11 +85,6 @@ function TabButtons({ navigation }) {
         icon="add"
         onPress={() => navigation.navigate('EditScreen', passData)}
       />
-      <IconButton
-        color="#fff"
-        icon="settings"
-        onPress={() => navigation.navigate('SettingsScreen')}
-      />
     </View>
   );
 }
