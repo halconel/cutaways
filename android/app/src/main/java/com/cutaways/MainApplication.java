@@ -1,4 +1,4 @@
-package com.cutaways;
+package ru.pointer;
 
 import android.app.Application;
 

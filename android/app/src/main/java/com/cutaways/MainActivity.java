@@ -1,4 +1,4 @@
-package com.cutaways;
+package ru.pointer;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
