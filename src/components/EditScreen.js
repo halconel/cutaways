@@ -1,144 +1,15 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-  Modal, Portal, TextInput, Button, Text, IconButton,
-} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { IconButton } from 'react-native-paper';
+import { PropTypes } from 'prop-types';
 import { withGlobalContext } from './GlobalContext';
+import EditForm from './EditForm';
 
 const styles = StyleSheet.create({
-  formContainer: {
-    flex: 1,
-    marginHorizontal: 16,
-  },
-  iconContainer: {
-    height: 56,
-    alignSelf: 'center',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: 16,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  icon: {
-    flex: 0,
-    marginRight: 16,
-  },
-  helper: {
-    paddingHorizontal: 12,
-    color: 'grey',
-  },
-  button: {
-    flex: 0,
-    alignSelf: 'center',
-    marginTop: 16,
-  },
   tab: {
     flexDirection: 'row',
   },
-  modalContainer: {
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    margin: 16,
-  },
-  modalText: {
-    padding: 16,
-  },
 });
-
-function AppInput({ icon, helper, ...textProps }) {
-  return (
-    <View style={styles.inputContainer}>
-      {icon && (
-        <View style={styles.iconContainer}>
-          <Icon style={styles.icon} name={icon} size={24} color="grey" />
-        </View>
-      )}
-      <View style={styles.textContainer}>
-        <TextInput {...textProps} />
-        {helper && <Text style={styles.helper}>{helper}</Text>}
-      </View>
-    </View>
-  );
-}
-
-function Form(props) {
-  const {
-    title,
-    phone,
-    message,
-    onChangeName,
-    onChangePhone,
-    onChangeMessage,
-    visible,
-    proceedDeleting
-  } = props;
-
-  const titleHelper = 'Введите наименование маяка для отображения в списке.';
-  const phoneHelper = 'Введите номер телефона в междунароном формате. Например, +7 911 123-12-13';
-  const messageHelper = 'Скопируйте в это поле последнее сообщение от маяка.\n(Не обязательно)';
-
-  return (
-    <View style={styles.formContainer}>
-      <AppInput
-        icon="tag"
-        label="Имя"
-        value={title}
-        helper={titleHelper}
-        onChangeText={onChangeName}
-      />
-      <AppInput
-        icon="phone"
-        label="Номер телефона"
-        keyboardType="phone-pad"
-        value={phone}
-        helper={phoneHelper}
-        onChangeText={onChangePhone}
-      />
-      <AppInput
-        icon="map-marker"
-        label="Последнее сообщение от маяка"
-        value={message}
-        helper={messageHelper}
-        multiline
-        onChangeText={onChangeMessage}
-      />
-      <DeleteModal visible={visible} proceedDeleting={proceedDeleting} />
-    </View>
-  );
-}
-
-function DeleteModal(props) {
-  const { visible, proceedDeleting } = props;
-  return (
-    <Portal>
-      <Modal visible={visible} onDismiss={() => proceedDeleting(false)}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>Удалить маяк из списка?</Text>
-          <View style={{ flexDirection: 'row' }}>
-            <Button
-              icon="check"
-              onPress={() => proceedDeleting(true)}
-              style={{ flex: 1 }}
-            >
-              Да
-            </Button>
-            <Button
-              icon="cancel"
-              onPress={() => proceedDeleting(false)}
-              style={{ flex: 1 }}
-            >
-              Нет
-            </Button>
-          </View>
-        </View>
-      </Modal>
-    </Portal>
-  );
-}
 
 class EditScreen extends Component {
   constructor(props) {
@@ -161,7 +32,7 @@ class EditScreen extends Component {
   }
 
   componentWillMount() {
-    //console.log('componentWillMount');
+    // console.log('componentWillMount');
     this.navigation.setParams({ setModalVisible: this.setModalVisible.bind(this) });
   }
 
@@ -190,13 +61,13 @@ class EditScreen extends Component {
       if (this.id !== null) this.deleteBeacon(this.id);
       this.navigation.goBack();
     }
-  }
+  };
 
   render() {
     const { title, phone, modalVisible } = this.state;
 
     return (
-      <Form
+      <EditForm
         title={title}
         phone={phone}
         onChangeName={this.onChangeName}
@@ -211,8 +82,14 @@ class EditScreen extends Component {
 }
 
 const onSubmit = (navigation, addBeacon, updateBeacon, id, title, phone, message) => {
-  if (id) updateBeacon({ id, title, phone, message });
-  else addBeacon({ title, phone, message });
+  if (id) {
+    updateBeacon({
+      id,
+      title,
+      phone,
+      message,
+    });
+  } else addBeacon({ title, phone, message });
   navigation.goBack();
 };
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
