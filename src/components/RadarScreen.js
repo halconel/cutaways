@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, PermissionsAndroid, Animated, Easing, Platform, Linking
+  StyleSheet, View, Text, Animated, Easing, Platform, Linking
 } from 'react-native';
-import { IconButton, Paragraph, Title } from 'react-native-paper';
-import { setUpdateIntervalForType, magnetometer, SensorTypes } from 'react-native-sensors';
+import { IconButton } from 'react-native-paper';
 import RNSimpleCompass from 'react-native-simple-compass';
 import Arrow from './Arrow';
 import { withGlobalContext } from './GlobalContext';
 import { distance, barring, angle } from '../utils/Utils';
-import Kalman from '../utils/KalmanFilter';
-import { getBatteryIcon } from './BatteryIcon';
 
 const styles = StyleSheet.create({
   tab: {
@@ -34,50 +31,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const kf_x = new Kalman({ R: 1, Q: 3 });
-const kf_y = new Kalman({ R: 1, Q: 3 });
-
-const MainTitle = ({ title, voltage }) => {
-  const _styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      margin: 16,
-    },
-    title: {
-      flex: 3,
-    },
-    icon: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      paddingTop: 4,
-    },
-  });
-
-  return (
-    <View style={_styles.container}>
-      <Title style={_styles.title}>{title}</Title>
-      <View style={_styles.icon}>{getBatteryIcon(voltage)}</View>
-    </View>
-  );
-};
-
-const requestPermission = () => {
-  if (Platform.OS === 'ios') return Promise.resolve(true);
-  return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(
-    (granted) => {
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        return Promise.resolve(true);
-      }
-      return Promise.reject(new Error('Location permission denied'));
-    },
-  );
-};
-
-const formatDistance = (distance) => {
-  if (distance < 1) return `${Math.round(distance * 1000)} м.`;
-  return `${Math.round(distance * 10) / 10} км.`;
+const formatDistance = (dist) => {
+  if (dist < 1) return `${Math.round(dist * 1000)} м.`;
+  return `${Math.round(dist * 10) / 10} км.`;
 };
 
 class RadarScreen extends Component {
@@ -108,10 +64,12 @@ class RadarScreen extends Component {
     };
     const errHandler = error => this.setState({ error: error.message });
     const options = { enableHighAccuracy: true, timeout: 20000, distanceFilter: 10 };
-    requestPermission().then((resolve) => {
-      navigator.geolocation.getCurrentPosition(posHandler, errHandler, options);
-      this.watchId = navigator.geolocation.watchPosition(posHandler, errHandler, options);
-    });
+    navigator.geolocation.getCurrentPosition(
+      posHandler,
+      errHandler,
+      { enableHighAccuracy: false, timeout: 20000 },
+    );
+    this.watchId = navigator.geolocation.watchPosition(posHandler, errHandler, options);
     // Compass
     this._subscribe();
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
-  FAB, IconButton, Dialog, Portal, TextInput, Button,
+  IconButton, Dialog, Portal, TextInput, Button,
 } from 'react-native-paper';
 import BeaconCard from './BeaconCard';
 import { withGlobalContext } from './GlobalContext';
@@ -22,28 +22,26 @@ const styles = StyleSheet.create({
   },
 });
 
-const MessageInput = ({
-  visible, message, onChangeMessage, hideDialog, onSubmit,
-}) => (
-    <Portal>
-      <Dialog visible={visible} onDismiss={hideDialog}>
-        <Dialog.Title>Сообщение от маяка</Dialog.Title>
-        <Dialog.Content>
-          <TextInput
-            label="SMS сообщение от маяка"
-            multiline
-            numberOfLines={4}
-            value={message}
-            onChange={onChangeMessage}
-          />
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => hideDialog()}>Cancel</Button>
-          <Button onPress={() => onSubmit()}>Ok</Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
-  );
+const MessageInput = ({ visible, message, onChangeMessage, hideDialog, onSubmit }) => (
+  <Portal>
+    <Dialog visible={visible} onDismiss={hideDialog}>
+      <Dialog.Title>Сообщение от маяка</Dialog.Title>
+      <Dialog.Content>
+        <TextInput
+          label="SMS сообщение от маяка"
+          multiline
+          numberOfLines={4}
+          value={message}
+          onChange={onChangeMessage}
+        />
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={() => hideDialog()}>Cancel</Button>
+        <Button onPress={() => onSubmit()}>Ok</Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
 
 class BeaconsScreen extends Component {
   constructor(props) {

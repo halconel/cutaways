@@ -3,7 +3,7 @@ import {
   Title, Paragraph, Card, Button, Surface,
 } from 'react-native-paper';
 import {
-  View, Image, Text, StyleSheet,
+  View, Image, Text, StyleSheet, PermissionsAndroid, Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getBatteryIcon, voltageToPercent } from './BatteryIcon';
@@ -92,9 +92,26 @@ function performAction() {
   //console.log('action');
 }
 
+const requestPermission = () => {
+  if (Platform.OS === 'ios') return Promise.resolve(true);
+  return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(
+    (granted) => {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return Promise.resolve(true);
+      }
+      return Promise.reject(new Error('Location permission denied'));
+    },
+  );
+};
+
 function onLocate(navigation, id, title) {
-  const passData = { id, title };
-  navigation.navigate('RadarScreen', passData);
+  requestPermission().then((resolve) => {
+    const passData = { id, title };
+    navigation.navigate('RadarScreen', passData);
+  })
+    .catch((err) => {
+      //console.log('There was an error: ' + err); 
+    });
 }
 
 function onGetStatus(navigation, phone) {
@@ -111,13 +128,13 @@ function BeaconCard({
       icon: 'my-location',
       onPress: () => onLocate(navigation, id, title),
     },
-    //{
-    //  name: 'Статус',
-    //  icon: 'sync',
-    //  onPress: () => onGetStatus(navigation, phone),
-    //},
     {
-      name: 'Редактировать',
+      name: 'SMS-команды',
+      icon: 'sms',
+      onPress: () => onGetStatus(navigation, phone),
+    },
+    {
+      name: 'Изменить',
       icon: 'edit',
       onPress: () => {
         const passData = {
