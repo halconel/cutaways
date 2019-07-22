@@ -120,6 +120,17 @@ class RadarScreen extends Component {
     //});
   };
 
+  onChangeMessage = (message) => {
+    const { id, title, phone } = this.beacon;
+    this.setState({ message });
+    updateBeacon({
+      id,
+      title,
+      phone,
+      message,
+    });
+  };
+
   spin() {
     const start = JSON.stringify(this.spinValue);
     const { compass, heading } = this.state;
@@ -138,17 +149,6 @@ class RadarScreen extends Component {
       easing: Easing.easeInOut,
     }).start();
   }
-
-  onChangeMessage = (message) => {
-    const { id, title, phone } = this.beacon;
-    this.setState({ message });
-    updateBeacon({
-      id,
-      title,
-      phone,
-      message,
-    });
-  };
 
   render() {
     const { latitude, longitude, message, compass, error } = this.state;
