@@ -23,7 +23,7 @@ class EditScreen extends Component {
     const title = navigation.getParam('title', '');
     const phone = navigation.getParam('phone', '');
 
-    this.state = { title, phone, modalVisible: false };
+    this.state = { title, phone, message: '', modalVisible: false };
     this.navigation = navigation;
     this.id = navigation.getParam('id', null);
     this.addBeacon = addBeacon;
@@ -64,12 +64,13 @@ class EditScreen extends Component {
   };
 
   render() {
-    const { title, phone, modalVisible } = this.state;
+    const { title, phone, modalVisible, message } = this.state;
 
     return (
       <EditForm
         title={title}
         phone={phone}
+        message={message}
         onChangeName={this.onChangeName}
         onChangePhone={this.onChangePhone}
         onChangeMessage={this.onChangeMessage}

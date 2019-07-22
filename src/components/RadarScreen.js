@@ -7,26 +7,31 @@ import RNSimpleCompass from 'react-native-simple-compass';
 import Arrow from './Arrow';
 import { withGlobalContext } from './GlobalContext';
 import { distance, barring, angle } from '../utils/Utils';
+import InputWithIcon from './InputWithIcon';
 
 const styles = StyleSheet.create({
   tab: {
     flex: 1,
     flexDirection: 'row',
   },
-  red: {
-    flex: 3,
+  syncContainer: {
+    flex: 1,
+    // backgroundColor: 'red',
+  },
+  distanceContainer: {
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: 'red',
   },
-  distance: {
+  distanceText: {
     fontSize: 48,
   },
-  yellow: {
+  arrowContainer: {
     flex: 4,
     // backgroundColor: 'yellow',
   },
-  container: {
+  screenContainer: {
     flex: 1,
   },
 });
@@ -34,6 +39,12 @@ const styles = StyleSheet.create({
 const formatDistance = (dist) => {
   if (dist < 1) return `${Math.round(dist * 1000)} м.`;
   return `${Math.round(dist * 10) / 10} км.`;
+};
+
+const SyncCommand = (props) => {
+  return (
+    <Text>Команда маяку</Text>
+  );
 };
 
 class RadarScreen extends Component {
@@ -51,6 +62,7 @@ class RadarScreen extends Component {
       error: null,
       compass: 0,
       heading: null,
+      message: '',
     };
   }
 
@@ -127,18 +139,43 @@ class RadarScreen extends Component {
     }).start();
   }
 
+  onChangeMessage = (message) => {
+    const { id, title, phone } = this.beacon;
+    this.setState({ message });
+    updateBeacon({
+      id,
+      title,
+      phone,
+      message,
+    });
+  };
+
   render() {
-    const { latitude, longitude, compass, error } = this.state;
+    const { latitude, longitude, message, compass, error } = this.state;
     const { beacon } = this;
 
+    const messageHelper = 'Скопируйте в это поле текст последнего sms-сообщение от маяка.';
     return (
-      <View style={styles.container}>
-        <View style={styles.red}>
-          <Text style={styles.distance}>
+      <View style={styles.screenContainer}>
+        <View style={styles.syncContainer}>
+          <SyncCommand
+            icon="map-marker"
+          />
+          <InputWithIcon
+            icon="map-marker"
+            label="Последнее сообщение от маяка"
+            value={message}
+            helper={messageHelper}
+            multiline
+            onChangeText={this.onChangeMessage}
+          />
+        </View>
+        <View style={styles.distanceContainer}>
+          <Text style={styles.distanceText}>
             {`${latitude ? formatDistance(distance(latitude, longitude, beacon.lat, beacon.lon)) : 'Местоположение телефона не определено'}`}
           </Text>
         </View>
-        <View style={styles.yellow}>
+        <View style={styles.arrowContainer}>
           <Arrow spinValue={this.spinValue} />
         </View>
       </View>
